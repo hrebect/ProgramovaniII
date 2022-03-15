@@ -240,12 +240,12 @@ RowLayout {
                         text:  model.display
                         color: {
                                 color = "black"
-                                if(model.population >= 5000)
+                                if(model.mestoLabel == "město v Česku")
                                     color = "red"
                                 }
                         font.bold: {
                                 font.bold = false
-                                if(model.population >= 5000)
+                                if(model.mestoLabel == "město v Česku")
                                     font.bold = true   
                                 }
 
@@ -274,7 +274,7 @@ RowLayout {
                         text: model.display
                         color:  {
                                 color = "black"
-                                if(model.population >= 5000)
+                                if(model.mestoLabel == "město v Česku")
                                     color = "red"
                                 }
                         font.bold: true

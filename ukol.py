@@ -20,35 +20,36 @@ class CityMap(QAbstractListModel):
         POPULATION = QtCore.Qt.UserRole+2
         OKRES = QtCore.Qt.UserRole+3
         KRAJ = QtCore.Qt.UserRole+4
+        STATUS = QtCore.Qt.UserRole+5
     
     def __init__(self,filename=None):
         """Initialize and load list from given file"""
         QAbstractListModel.__init__(self)
         self.city_list_all = []
-        self.city_liss_filtred = []
-                        
-        if filename:
-            self.load_from_json(filename)
+        self.city_list_filtred = []
+        
         # Min and max Value
         self._min_population = 0
         self._max_population = 1500000
         self._cities = True
-        self._villages = True
-
-
+        self._villages = True                
+        
+        if filename:
+            self.load_from_json(filename)
+       
 
 
     def load_from_json(self,filename):
-        """Load list of cities from given file"""
         with open(filename,encoding="utf-8") as f:
-            self.city_list_all = json.load(f)
+            self.city_list_all = json.load(f)  #list of all on future
 
             # Create QGeoCoordinate from the original JSON location
-            for c in self.city_list_all:
+            for c in self.city_list_all:  #list of all in future
                 pos = c['location']
                 lon,lat = pos.split("(")[1].split(")")[0].split(" ") # Get the part between brackets and split it on space
                 c['location'] = QGeoCoordinate(float(lat),float(lon)) # Create QGeoCoordinate and overwrite original `location` entry
-            
+        
+         
         
 
     def rowCount(self, parent:QtCore.QModelIndex=...) -> int:
@@ -57,7 +58,6 @@ class CityMap(QAbstractListModel):
 
     def data(self, index:QtCore.QModelIndex, role:int=...) -> typing.Any:
         """ For given index and role return information of the city"""
-        #print(index.row(),role) # Print requested row and role for debugging
         if role == QtCore.Qt.DisplayRole: # On DisplayRole return name
             return self.city_list_filtred[index.row()]["muniLabel"]
         elif role == self.Roles.LOCATION.value: # On location role return coordinates
@@ -70,6 +70,8 @@ class CityMap(QAbstractListModel):
             return self.city_list_filtred[index.row()]["okresLabel"]
         elif role == self.Roles.KRAJ.value: # On population role return population
             return self.city_list_filtred[index.row()]["krajLabel"]
+        elif role == self.Roles.STATUS.value: # On population role return population
+            return self.city_list_filtred[index.row()]["mestoLabel"]
 
         
             
@@ -83,6 +85,7 @@ class CityMap(QAbstractListModel):
         roles[self.Roles.POPULATION.value] = QByteArray(b'population')
         roles[self.Roles.OKRES.value] = QByteArray(b'okresLabel')
         roles[self.Roles.KRAJ.value] = QByteArray(b'krajLabel')
+        roles[self.Roles.STATUS.value] = QByteArray(b'mestoLabel')
         print(roles)
         return roles
     
@@ -148,11 +151,17 @@ class CityMap(QAbstractListModel):
 
         self.clearCities()
 
+        i = 0
+
+
+        for feature in self.city_list_all:
+
+            self.beginInsertRows(self.index(0).parent(), i, i)
+            self.city_list_filtred.append(feature)
+            self.endInsertRows()
+            i +=1
+
        
-        #self.roleNames()
-        '''print(new_list)
-        print(len(new_list))
-        print((len(self.city_list)))'''
 
 app = QGuiApplication(sys.argv)
 view = QQuickView()
