@@ -136,42 +136,17 @@ RowLayout {
             id: comboKraj
             width: parent.width
             Layout.alignment: Qt.AlignHCenter
-            model: ["Vše","Jihočeský", "Jihomoravský", "Karlovarský", "Královéhradecký", "Liberecký", "Moravskoslezský", "Olomoucký", "Pardubický", "Plzeňský", "Praha", "Středočeský", "Ústecký", "Vysočina", "Zlínský"]
-            onActivated: {
-                    if (currentIndex == 1)
-                        comboOkres.model = ["Vše", "České Budějovice", "Český Krumlov", "Jindřichův Hradec", "Písek", "Prachatice", "Strakonice", "Tábor"]
-                    if (currentIndex == 2)
-                        comboOkres.model = ["Vše", "Blansko", "Brno-město", "Brno-venkov", "Břeclav", "Hodonín", "Vyškov", "Znojmo"]
-                    if (currentIndex == 3)
-                        comboOkres.model = ["Vše", "Cheb", "Karlovy Vary", "Sokolov"]
-                    if (currentIndex == 4)
-                        comboOkres.model = ["Vše", "Hradec Králové", "Jičín", "Náchod", "Rychnov nad Kněžnou", "Trutnov"]
-                    if (currentIndex == 5)
-                        comboOkres.model = ["Vše", "Česká Lípa", "Jablonec nad Nisou", "Liberec", "Semily"]
-                    if (currentIndex == 6)
-                        comboOkres.model = ["Vše", "Bruntál", "Frýdek-Místek", "Karviná", "Nový Jičín", "Opava", "Ostrava-město"]
-                    if (currentIndex == 7)
-                        comboOkres.model = ["Vše", "Jeseník", "Olomouc", "Prostějov", "Přerov", "Šumperk"]
-                    if (currentIndex == 8)
-                        comboOkres.model = ["Vše", "Chrudim", "Pardubice", "Svitavy", "Ústí nad Orlicí"]
-                    if (currentIndex == 9)
-                        comboOkres.model = ["Vše", "Domažlice", "Klatovy", "Plzeň-jih", "Plzeň-město", "Plzeň-sever", "Rokycany", "Tachov"]
-                    if (currentIndex == 10)
-                        comboOkres.model = ["Vše","Praha"]
-                    if (currentIndex == 11)
-                        comboOkres.model = ["Vše", "Benešov", "Beroun", "Kladno", "Kolín", "Kutná Hora", "Mělník", "Mladá Boleslav", "Nymburk", "Praha-východ", "Praha-západ", "Příbram", "Rakovník"]
-                    if (currentIndex == 12)
-                        comboOkres.model = ["Vše", "Děčín", "Chomutov", "Litoměřice", "Louny", "Most", "Teplice", "Ústí nad Labem"]
-                    if (currentIndex == 13)
-                        comboOkres.model = ["Vše", "Havlíčkův Brod", "Jihlava", "Pelhřimov", "Třebíč", "Žďár nad Sázavou"]
-                    if (currentIndex == 14)
-                        comboOkres.model = ["Vše", "Kroměříž", "Uherské Hradiště", "Vsetín", "Zlín"]                      
-                }
+            model: MapOfCities.kraje
+            onActivated: { MapOfCities.loadOkresy()
+                comboOkres.model = MapOfCities.okresy}
         }
 
+        Binding {
+                    target: MapOfCities
+                    property: "kraj_current"
+                    value: comboKraj.currentText
+        }
       
-        
-
         Text {
             width: parent.width
             Layout.alignment: Qt.AlignHCenter
@@ -184,12 +159,15 @@ RowLayout {
             id: comboOkres
             width: parent.width
             Layout.alignment: Qt.AlignHCenter
-            model: ["Vše"]
+            model: MapOfCities.okresy
         }
 
-
+        Binding {
+                    target: MapOfCities
+                    property: "okres_current"
+                    value: comboOkres.currentText
+        }
         
-
         Button {
             id: filter
             width: parent.width

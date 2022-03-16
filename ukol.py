@@ -32,12 +32,41 @@ class CityMap(QAbstractListModel):
         self._min_population = 0
         self._max_population = 1500000
         self._cities = True
-        self._villages = True                
+        self._villages = True  
+        self._kraje = []
+        self._okresy = ['Vše']
+        self._kraj_current = 'Vše' 
+        self._okres_current = 'Vše'
+
         
         if filename:
             self.load_from_json(filename)
-       
+            self.loadKraje()
 
+    def unique(self, list1): 
+        # Get unique values from list (https://www.geeksforgeeks.org/python-get-unique-values-list/)
+        unique_list = []
+        
+        # traverse for all elements
+        for x in list1:
+            # check if exists in unique_list or not
+            if x not in unique_list:
+                unique_list.append(x)
+        unique_list.sort()
+        return unique_list
+
+    
+    def loadKraje(self):
+        # Load kraje
+        self._kraje = self.unique([d['krajLabel'] for d in self.city_list_all if 'krajLabel' in d])
+        self._kraje.insert(0, "Vše")
+
+    @Slot()
+    def loadOkresy(self):
+        # Load okresy, called from qml
+        self._okresy = self.unique([d['okresLabel'] for d in self.city_list_all if ('okresLabel' in d and d['krajLabel'] == self.kraj_current)]) 
+        self._okresy.insert(0, "Vše")
+ 
 
     def load_from_json(self,filename):
         with open(filename,encoding="utf-8") as f:
@@ -48,9 +77,17 @@ class CityMap(QAbstractListModel):
                 pos = c['location']
                 lon,lat = pos.split("(")[1].split(")")[0].split(" ") # Get the part between brackets and split it on space
                 c['location'] = QGeoCoordinate(float(lat),float(lon)) # Create QGeoCoordinate and overwrite original `location` entry
-        
-         
-        
+
+        with open(filename,encoding="utf-8") as f:
+            self.city_list_filtred = json.load(f)  #list of all on future
+
+            # Create QGeoCoordinate from the original JSON location
+            for c in self.city_list_filtred:  #list of all in future
+                pos = c['location']
+                lon,lat = pos.split("(")[1].split(")")[0].split(" ") # Get the part between brackets and split it on space
+                c['location'] = QGeoCoordinate(float(lat),float(lon)) # Create QGeoCoordinate and overwrite original `location` entry
+
+            
 
     def rowCount(self, parent:QtCore.QModelIndex=...) -> int:
         """ Return number of cities in the list"""
@@ -102,6 +139,17 @@ class CityMap(QAbstractListModel):
     def get_villages(self):
         return self._villages
 
+    def get_kraje(self):
+        return self._kraje
+
+    def get_okresy(self):
+        return self._okresy
+
+    def get_kraj_current(self):
+        return self._kraj_current
+
+    def get_okres_current(self):
+        return self._okres_current
 
     # Setters
     def set_min_population(self, val):
@@ -123,45 +171,92 @@ class CityMap(QAbstractListModel):
         if val != self._villages:
             self._villages = val
             self.villages_changed.emit()
+
+    def set_kraj_current(self,val):
+        if val != self._kraj_current:
+            self._kraj_current = val
+            self.kraj_current_changed.emit()
+
+    def set_okres_current(self,val):
+        if val != self._okres_current:
+            self._okres_current = val
+            self.okres_current_changed.emit()
+
+
     
     def clearCities(self) -> None:
         """ Clear all cities and villages from the list"""
         self.beginRemoveRows(self.index(0).parent(), 0, self.rowCount()-1)
         self.city_list_filtred = []
-        self.endRemoveRows()        
+        self.endRemoveRows()
+        
     
     # Declare a notification method        
     min_pop_changed = Signal()
     max_pop_changed = Signal()
     cities_changed = Signal()
-    villages_changed = cities_changed
+    villages_changed = Signal()
+    kraj_current_changed = Signal()
+    okres_current_changed = Signal()
 
     min_population = Property(int, get_min_population, set_min_population, notify=min_pop_changed)
     max_population = Property(int, get_max_population, set_max_population, notify=max_pop_changed)
     cities = Property(bool, get_cities, set_cities, notify=cities_changed)
     villages = Property(bool, get_villages, set_villages, notify=villages_changed)
+    kraje = Property(list, get_kraje)
+    okresy = Property(list, get_okresy)
+    kraj_current = Property(str, get_kraj_current, set_kraj_current, notify=kraj_current_changed)
+    okres_current = Property(str, get_okres_current, set_okres_current, notify=okres_current_changed)
+
 
     
-
-
 
     # Filter data
     @Slot()
     def filterData(self):
 
+        # Clear all items
         self.clearCities()
 
-        i = 0
-
-
+        # Creat list filtred by population
+        city_list_min_max= []
         for feature in self.city_list_all:
+            if "population" in feature:
+                if self.max_population > int(feature["population"]) > self.min_population:
+                    city_list_min_max.append(feature)
+        
+        # Filter list by kraj
+        if self.kraj_current != 'Vše':
+            city_list_kraj = [d for d in city_list_min_max if d['krajLabel'] == self.kraj_current]
+        else:
+            city_list_kraj = city_list_min_max
 
-            self.beginInsertRows(self.index(0).parent(), i, i)
-            self.city_list_filtred.append(feature)
-            self.endInsertRows()
-            i +=1
+        # Filter list by okres
+        if self.okres_current != 'Vše':
+            city_list_okres = [d for d in city_list_kraj if d['okresLabel'] == self.okres_current]
+        else:
+            city_list_okres = city_list_kraj
+        
+        # Write filtred list into GUI
+        i = 0
+        for feature in city_list_okres:
+            
+            # Return villiages if wanted
+            if self._villages:
+                if 'mestoLabel' not in feature:
+                    
+                    self.beginInsertRows(self.index(0).parent(), i, i)
+                    self.city_list_filtred.append(feature)
+                    self.endInsertRows()
+                    i +=1
+            # Return cities if wanted
+            if self._cities:
+                if 'mestoLabel' in feature and feature['mestoLabel'] == "město v Česku":
 
-       
+                    self.beginInsertRows(self.index(0).parent(), i, i)
+                    self.city_list_filtred.append(feature)
+                    self.endInsertRows()
+                    i +=1
 
 app = QGuiApplication(sys.argv)
 view = QQuickView()
