@@ -6,7 +6,6 @@ import QtPositioning 5.14
 import QtQuick.Layouts 1.15
 
 
-
 RowLayout {
 
 	implicitWidth: 2000	// width on the start of the program
@@ -168,13 +167,10 @@ RowLayout {
 			text: "Filtrovat"
 			onClicked: {MapOfCities.filterData()
                         cityList.currentIndex = -1 
-                        mapWindow.center = QtPositioning.coordinate(49.74375, 15.338639) //center of Czechia
-                        mapWindow.zoomLevel = 8.25
-            }
-                      
+                        mapWindow.center = QtPositioning.coordinate(49.74375, 15.338639) //center of Czechia, should be calculated froma actual dataset
+                        mapWindow.zoomLevel = 8.25 //should be calculated froma actual dataset
+            }                    
 		}
-
-
     }
 
     Plugin {
@@ -186,18 +182,14 @@ RowLayout {
         }
     }
 
-    Map {
-        
+    Map {   
         id: mapWindow
         Layout.fillWidth: true
         Layout.fillHeight: true
-            
-
         plugin: mapPlugin
         activeMapType: supportedMapTypes[supportedMapTypes.length-2] // Use our custom tile server
-
-        center: QtPositioning.coordinate(49.74375, 15.338639) //center of Czechia
-        zoomLevel: 8.25
+        center: QtPositioning.coordinate(49.74375, 15.338639) //center of Czechia, should be calculated froma actual dataset
+        zoomLevel: 8.25 //should be calculated froma actual dataset
 
         MapItemView {
             model: MapOfCities
@@ -223,9 +215,7 @@ RowLayout {
                                 if(model.mestoLabel == "město v Česku")
                                     font.bold = true   
                                 }
-
                     }
-
                 }
             }
         }
