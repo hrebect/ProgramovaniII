@@ -28,7 +28,7 @@ class CityMap(QAbstractListModel):
         self.city_list_all = []
         self.city_list_filtred = []
         
-        # Min and max Value
+        # Initialize variables 
         self._min_population = 0
         self._max_population = 1500000
         self._cities = True
@@ -57,13 +57,13 @@ class CityMap(QAbstractListModel):
 
     
     def loadKraje(self):
-        # Load kraje
+        # Load regions
         self._kraje = self.unique([d['krajLabel'] for d in self.city_list_all if 'krajLabel' in d])
         self._kraje.insert(0, "Vše")
 
     @Slot()
     def loadOkresy(self):
-        # Load okresy, called from qml
+        # Load districts, called from qml
         self._okresy = self.unique([d['okresLabel'] for d in self.city_list_all if ('okresLabel' in d and d['krajLabel'] == self.kraj_current)]) 
         self._okresy.insert(0, "Vše")
  
@@ -78,6 +78,7 @@ class CityMap(QAbstractListModel):
                 lon,lat = pos.split("(")[1].split(")")[0].split(" ") # Get the part between brackets and split it on space
                 c['location'] = QGeoCoordinate(float(lat),float(lon)) # Create QGeoCoordinate and overwrite original `location` entry
 
+        # Fill data for first open
         with open(filename,encoding="utf-8") as f:
             self.city_list_filtred = json.load(f)  #list of all on future
 
@@ -183,14 +184,12 @@ class CityMap(QAbstractListModel):
             self.okres_current_changed.emit()
 
 
-    
     def clearCities(self) -> None:
         """ Clear all cities and villages from the list"""
         self.beginRemoveRows(self.index(0).parent(), 0, self.rowCount()-1)
         self.city_list_filtred = []
         self.endRemoveRows()
-        
-    
+         
     # Declare a notification method        
     min_pop_changed = Signal()
     max_pop_changed = Signal()
@@ -208,9 +207,6 @@ class CityMap(QAbstractListModel):
     kraj_current = Property(str, get_kraj_current, set_kraj_current, notify=kraj_current_changed)
     okres_current = Property(str, get_okres_current, set_okres_current, notify=okres_current_changed)
 
-
-    
-
     # Filter data
     @Slot()
     def filterData(self):
@@ -225,13 +221,13 @@ class CityMap(QAbstractListModel):
                 if self.max_population > int(feature["population"]) > self.min_population:
                     city_list_min_max.append(feature)
         
-        # Filter list by kraj
+        # Filter list by region
         if self.kraj_current != 'Vše':
             city_list_kraj = [d for d in city_list_min_max if d['krajLabel'] == self.kraj_current]
         else:
             city_list_kraj = city_list_min_max
 
-        # Filter list by okres
+        # Filter list by district
         if self.okres_current != 'Vše':
             city_list_okres = [d for d in city_list_kraj if d['okresLabel'] == self.okres_current]
         else:
