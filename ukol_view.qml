@@ -20,6 +20,8 @@ RowLayout {
     property var currentModelItem;
     
     
+    
+    
 
     ColumnLayout {
         id: clmn
@@ -173,8 +175,12 @@ RowLayout {
             width: parent.width
             Layout.alignment: Qt.AlignHCenter
 			text: "Filtrovat"
-			onClicked: MapOfCities.filterData()
-
+			onClicked: {MapOfCities.filterData()
+                        cityList.currentIndex = -1 
+                        mapWindow.center = QtPositioning.coordinate(49.74375, 15.338639) //center of Czechia
+                        mapWindow.zoomLevel = 8.25
+            }
+                      
 		}
 
 
@@ -185,7 +191,7 @@ RowLayout {
         name: "osm" // We want OpenStreetMap map provider
         PluginParameter {
              name:"osm.mapping.custom.host"
-             value:"https://maps.wikimedia.org/osm/" // We want custom tile server for tiles without labels
+             value: "https://www.openstreetmap.org/#map" //"https://maps.wikimedia.org/osm/"
         }
     }
 
@@ -197,10 +203,10 @@ RowLayout {
             
 
         plugin: mapPlugin
-        activeMapType: supportedMapTypes[supportedMapTypes.length -2] // Use our custom tile server
+        activeMapType: supportedMapTypes[supportedMapTypes.length-2] // Use our custom tile server
 
-        center: currentModelItem.location // Center to the selected city
-        zoomLevel: 12
+        center: QtPositioning.coordinate(49.74375, 15.338639) //center of Czechia
+        zoomLevel: 8.25
 
         MapItemView {
             model: MapOfCities
@@ -234,11 +240,14 @@ RowLayout {
         }
     }  
     ListView {
+
         id: cityList
         width: 200
 		Layout.fillHeight: true
         Layout.alignment: Qt.AlignRight
         
+        currentIndex: -1 //load data with empty current item
+
         focus: true
 
         Component {
@@ -283,15 +292,23 @@ RowLayout {
                 }
             }
         }
-
+        
         model: DelegateModel {
             id: cityListDelegateModel
+            
             model: MapOfCities
             delegate: cityListDelegate
+            
         }
+        
 
         // When current item of the list is changed, update the currentModelItem property
-        onCurrentItemChanged: currentModelItem = cityListDelegateModel.items.get(cityList.currentIndex).model
+        
+        onCurrentItemChanged: {currentModelItem = cityListDelegateModel.items.get(cityList.currentIndex).model
+                                mapWindow.center =  currentModelItem.location
+                                mapWindow.zoomLevel = 12
+        }
+
 
         highlight: Rectangle {
             color: "lightsteelblue"
