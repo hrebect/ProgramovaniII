@@ -5,7 +5,6 @@ import QtLocation 5.14
 import QtPositioning 5.14
 import QtQuick.Layouts 1.15
 
-
 RowLayout {
 
 	implicitWidth: 2000	// width on the start of the program
