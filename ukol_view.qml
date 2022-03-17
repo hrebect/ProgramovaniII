@@ -11,23 +11,14 @@ RowLayout {
 
 	implicitWidth: 2000	// width on the start of the program
 	implicitHeight: 2000	// height on the start of the program
-    //Layout.fillHeight: true 
-    
 	anchors.fill: parent
     
-
     // Create property holding model of currently selected city
     property var currentModelItem;
     
-    
-    
-    
-
     ColumnLayout {
         id: clmn
-        //height: parent.height
         Layout.fillHeight: true //full hight
-        //Layout.alignment: Qt.AlignHCenter
         width: 250
         spacing: 20
         
@@ -244,10 +235,8 @@ RowLayout {
         id: cityList
         width: 200
 		Layout.fillHeight: true
-        Layout.alignment: Qt.AlignRight
-        
+        Layout.alignment: Qt.AlignRight       
         currentIndex: -1 //load data with empty current item
-
         focus: true
 
         Component {
@@ -302,20 +291,14 @@ RowLayout {
         }
         
 
-        // When current item of the list is changed, update the currentModelItem property
-        
+        // When current item of the list is changed, update the currentModelItem property, change map zoom        
         onCurrentItemChanged: {currentModelItem = cityListDelegateModel.items.get(cityList.currentIndex).model
                                 mapWindow.center =  currentModelItem.location
                                 mapWindow.zoomLevel = 12
         }
 
-
         highlight: Rectangle {
             color: "lightsteelblue"
-        }
-
-        
-           
+        }           
     }
-
 }
