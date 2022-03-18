@@ -108,7 +108,7 @@ class CityMap(QAbstractListModel):
             return self.city_list_filtred[index.row()]["okresLabel"]
         elif role == self.Roles.KRAJ.value: # On population role return population
             return self.city_list_filtred[index.row()]["krajLabel"]
-        elif role == self.Roles.STATUS.value: # On population role return population
+        elif role == self.Roles.STATUS.value and "mestoLabel" in self.city_list_filtred[index.row()]: # On population role return population
             return self.city_list_filtred[index.row()]["mestoLabel"]
 
         
