@@ -54,8 +54,10 @@ RowLayout {
             Layout.alignment: Qt.AlignHCenter
             from: 0
             to: 1500000
-            first.value: MapOfCities.min_population
-            second.value: MapOfCities.max_population
+
+            Component.onCompleted: {
+                    populationSlider.setValues(0, 1500000)
+            }
 
         }
 
@@ -166,8 +168,7 @@ RowLayout {
 			text: "Filtrovat"
 			onClicked: {MapOfCities.filterData()
                         cityList.currentIndex = -1 
-                        mapWindow.center = QtPositioning.coordinate(49.74375, 15.338639) //center of Czechia, should be calculated froma actual dataset
-                        mapWindow.zoomLevel = 8.25 //should be calculated froma actual dataset
+                        mapWindow.fitViewportToVisibleMapItems()
             }                    
 		}
     }
