@@ -42,29 +42,20 @@ class CityMap(QAbstractListModel):
         if filename:
             self.load_from_json(filename)
             self.loadKraje()
-
-    def unique(self, list1): 
-        # Get unique values from list (https://www.geeksforgeeks.org/python-get-unique-values-list/)
-        unique_list = []
-        
-        # traverse for all elements
-        for x in list1:
-            # check if exists in unique_list or not
-            if x not in unique_list:
-                unique_list.append(x)
-        unique_list.sort()
-        return unique_list
-
     
     def loadKraje(self):
         # Load regions
-        self._kraje = self.unique([d['krajLabel'] for d in self.city_list_all if 'krajLabel' in d])
-        self._kraje.insert(0, "Vše")
+        set_kraje = set([d['krajLabel'] for d in self.city_list_all if 'krajLabel' in d])
+        self._kraje = list(set_kraje)
+        self._kraje.sort()
+        self._kraje.insert(0, 'Vše')
 
     @Slot()
     def loadOkresy(self):
         # Load districts, called from qml
-        self._okresy = self.unique([d['okresLabel'] for d in self.city_list_all if ('okresLabel' in d and d['krajLabel'] == self.kraj_current)]) 
+        set_okresy = set([d['okresLabel'] for d in self.city_list_all if ('okresLabel' in d and d['krajLabel'] == self.kraj_current)])
+        self._okresy = list(set_okresy)
+        self._okresy.sort() 
         self._okresy.insert(0, "Vše")
  
 
@@ -79,15 +70,7 @@ class CityMap(QAbstractListModel):
                 c['location'] = QGeoCoordinate(float(lat),float(lon)) # Create QGeoCoordinate and overwrite original `location` entry
 
         # Fill data for first open
-        with open(filename,encoding="utf-8") as f:
-            self.city_list_filtred = json.load(f)  #list of all on future
-
-            # Create QGeoCoordinate from the original JSON location
-            for c in self.city_list_filtred:  #list of all in future
-                pos = c['location']
-                lon,lat = pos.split("(")[1].split(")")[0].split(" ") # Get the part between brackets and split it on space
-                c['location'] = QGeoCoordinate(float(lat),float(lon)) # Create QGeoCoordinate and overwrite original `location` entry
-
+        self.city_list_filtred = self.city_list_all
             
 
     def rowCount(self, parent:QtCore.QModelIndex=...) -> int:
@@ -238,7 +221,7 @@ class CityMap(QAbstractListModel):
         for feature in city_list_okres:
             
             # Return villiages if wanted
-            if self._villages:
+            if self.villages:
                 if 'mestoLabel' not in feature:
                     
                     self.beginInsertRows(self.index(0).parent(), i, i)
@@ -246,7 +229,7 @@ class CityMap(QAbstractListModel):
                     self.endInsertRows()
                     i +=1
             # Return cities if wanted
-            if self._cities:
+            if self.cities:
                 if 'mestoLabel' in feature and feature['mestoLabel'] == "město v Česku":
 
                     self.beginInsertRows(self.index(0).parent(), i, i)

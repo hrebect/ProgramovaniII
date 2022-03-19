@@ -250,6 +250,7 @@ RowLayout {
                         }
 
                         Text {
+                            textFormat: Text.RichText
                             text: model.area+" km<sup>2</sup>"
                         }
                     }
