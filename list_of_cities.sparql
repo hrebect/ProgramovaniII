@@ -1,4 +1,4 @@
-SELECT DISTINCT ?muni ?muniLabel ?mesto ?mestoLabel ?okres ?okresLabel ?population ?kraj ?krajLabel ?location ?area WHERE {
+SELECT DISTINCT ?muni ?muniLabel ?mesto ?mestoLabel ?okres ?okresLabel ?population ?kraj ?krajLabel ?location ?area ?logo WHERE {
   SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE]". }
   {
     SELECT DISTINCT ?muni WHERE {
@@ -16,6 +16,7 @@ SELECT DISTINCT ?muni ?muniLabel ?mesto ?mestoLabel ?okres ?okresLabel ?populati
   ?okres wdt:P131 ?kraj.
   ?muni wdt:P625 ?location.
   ?muni wdt:P2046 ?area.
+  OPTIONAL {?muni wdt:P94 ?logo.}
   OPTIONAL {?muni wdt:P1082 ?population.}
 }
 LIMIT 7000

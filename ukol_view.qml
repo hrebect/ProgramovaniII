@@ -54,6 +54,10 @@ RowLayout {
             Layout.alignment: Qt.AlignHCenter
             from: 0
             to: 1500000
+            first.value: MapOfCities.min_population
+            second.value: MapOfCities.max_population
+            stepSize: 1.0
+            snapMode: RangeSlider.SnapAlways
 
             Component.onCompleted: {
                     populationSlider.setValues(0, 1500000)
@@ -223,7 +227,7 @@ RowLayout {
     ListView {
 
         id: cityList
-        width: 200
+        width: 250
 		Layout.fillHeight: true
         Layout.alignment: Qt.AlignRight       
         currentIndex: -1 //load data with empty current item
@@ -232,38 +236,49 @@ RowLayout {
         Component {
             id: cityListDelegate
             Item {
-                width: childrenRect.width
+                width: parent.width
                 height: childrenRect.height +10
-        
-                Column{
-                    Text {
-                        text: model.display
-                        color:  {
-                                color = "black"
-                                if(model.mestoLabel == "město v Česku")
-                                    color = "red"
-                                }
-                        font.bold: true
 
-                    }
-                    Row{
-                        Text{text: "Rozloha: "
-                        }
-
+                Row {
+                    spacing: 2
+                    
+                    Column{
+                        id: column_txt
                         Text {
-                            textFormat: Text.RichText
-                            text: model.area+" km<sup>2</sup>"
+                            text: model.display
+                            color:  {
+                                    color = "black"
+                                    if(model.mestoLabel == "město v Česku")
+                                        color = "red"
+                                    }
+                            font.bold: true
+
+                        }
+                        Row{
+                            Text{text: "Rozloha: "
+                            }
+
+                            Text {
+                                textFormat: Text.RichText
+                                text: model.area+" km<sup>2</sup>"
+                            }
+                        }
+
+                        Row{
+                            Text{text: "Počet Obyvatel: "
+                            }
+
+                            Text {
+                                text: model.population
+                            }
                         }
                     }
-
-                    Row{
-                        Text{text: "Počet Obyvatel: "
-                        }
-
-                        Text {
-                            text: model.population
-                        }
-                    }
+                    /*Image{
+                        width: column_txt.height
+                        height: column_txt.height
+                        source: "http://i.kym-cdn.com/entries/icons/original/000/002/144/You_Shall_Not_Pass!_0-1_screenshot.jpg"
+                        //source: model.logo
+                    }*/
                 }
                 
                 MouseArea {

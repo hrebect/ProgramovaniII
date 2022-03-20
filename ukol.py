@@ -21,6 +21,7 @@ class CityMap(QAbstractListModel):
         OKRES = QtCore.Qt.UserRole+3
         KRAJ = QtCore.Qt.UserRole+4
         STATUS = QtCore.Qt.UserRole+5
+        LOGO = QtCore.Qt.UserRole+6
     
     def __init__(self,filename=None):
         """Initialize and load list from given file"""
@@ -33,11 +34,11 @@ class CityMap(QAbstractListModel):
         self._max_population = 1500000
         self._cities = True
         self._villages = True 
-        #self._kraje = [] 
-        self._kraje = set()
+        self._kraje = [] 
         self._okresy = ['Vše']
         self._kraj_current = 'Vše' 
         self._okres_current = 'Vše'
+        self._logo = ''
 
         
         if filename:
@@ -46,11 +47,10 @@ class CityMap(QAbstractListModel):
     
     def loadKraje(self):
         # Load regions
-        self._kraje = set([d['krajLabel'] for d in self.city_list_all if 'krajLabel' in d])
-        '''set_kraje = set([d['krajLabel'] for d in self.city_list_all if 'krajLabel' in d])
+        set_kraje = set([d['krajLabel'] for d in self.city_list_all if 'krajLabel' in d])
         self._kraje = list(set_kraje)
         self._kraje.sort()
-        self._kraje.insert(0, 'Vše')'''
+        self._kraje.insert(0, 'Vše')
 
     @Slot()
     def loadOkresy(self):
@@ -95,6 +95,8 @@ class CityMap(QAbstractListModel):
             return self.city_list_filtred[index.row()]["krajLabel"]
         elif role == self.Roles.STATUS.value and "mestoLabel" in self.city_list_filtred[index.row()]: # On population role return population
             return self.city_list_filtred[index.row()]["mestoLabel"]
+        elif role == self.Roles.LOGO.value and "logo" in self.city_list_filtred[index.row()]: # On population role return population
+            return self.city_list_filtred[index.row()]["logo"]
 
         
             
@@ -109,6 +111,7 @@ class CityMap(QAbstractListModel):
         roles[self.Roles.OKRES.value] = QByteArray(b'okresLabel')
         roles[self.Roles.KRAJ.value] = QByteArray(b'krajLabel')
         roles[self.Roles.STATUS.value] = QByteArray(b'mestoLabel')
+        roles[self.Roles.LOGO.value] = QByteArray(b'logo')
         print(roles)
         return roles
     
@@ -140,12 +143,12 @@ class CityMap(QAbstractListModel):
     # Setters
     def set_min_population(self, val):
         if val != self._min_population:
-            self._min_population = val
+            self._min_population = int(val)
             self.min_pop_changed.emit()
     
     def set_max_population(self, val):
         if val != self._max_population:
-            self._max_population = val
+            self._max_population = int(val)
             self.max_pop_changed.emit()
 
     def set_cities(self, val):
@@ -187,8 +190,7 @@ class CityMap(QAbstractListModel):
     max_population = Property(int, get_max_population, set_max_population, notify=max_pop_changed)
     cities = Property(bool, get_cities, set_cities, notify=cities_changed)
     villages = Property(bool, get_villages, set_villages, notify=villages_changed)
-    #kraje = Property(list, get_kraje)
-    kraje = Property(set, get_kraje)
+    kraje = Property(list, get_kraje)
     okresy = Property(list, get_okresy)
     kraj_current = Property(str, get_kraj_current, set_kraj_current, notify=kraj_current_changed)
     okres_current = Property(str, get_okres_current, set_okres_current, notify=okres_current_changed)
