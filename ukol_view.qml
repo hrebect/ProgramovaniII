@@ -256,18 +256,6 @@ RowLayout {
                         mapWindow.fitViewportToVisibleMapItems()
             }
         }
-
-        Button {
-            id:btn
-            width: parent.width
-            Layout.alignment: Qt.AlignHCenter
-            text: "Uložit"
-            onClicked: {
-                load.active = !load.active
-                load.active = !load.active
-            }
-        }
-
     }
 
     Plugin {
