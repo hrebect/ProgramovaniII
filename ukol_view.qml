@@ -4,6 +4,7 @@ import QtQml.Models 2.1
 import QtLocation 5.14
 import QtPositioning 5.14
 import QtQuick.Layouts 1.15
+import QtQuick.Dialogs 1.0
 
 RowLayout {
 
@@ -19,7 +20,7 @@ RowLayout {
         Layout.fillHeight: true //full hight
         width: 250
         spacing: 20
-        
+
         CheckBox {
             id: boxCities
             checked: true
@@ -48,7 +49,7 @@ RowLayout {
             font.pointSize: 12
         }
 
-       
+
         RangeSlider {
             id: populationSlider
             Layout.alignment: Qt.AlignHCenter
@@ -76,31 +77,31 @@ RowLayout {
                 property: "max_population"
                 value: populationSlider.second.value
         }
-    
+
         Row {
             width: parent.width
             height: childrenRect.height
-                                       
+
             Text {
                 text: "Od: "
                 font.family: "Helvetica"
                 font.pointSize: 9
             }
-            
+
             TextInput{
                 id: popMin
                 width:100
-                text: populationSlider.first.value
+                text: MapOfCities.min_population
                 font.family: "Helvetica"
                 font.pointSize: 9
-            }                    
-               
+            }
+
             Text {
                 text: " do: "
                 font.family: "Helvetica"
                 font.pointSize: 9
             }
-            
+
             TextInput{
                 id: popMax
                 text: MapOfCities.max_population
@@ -118,6 +119,85 @@ RowLayout {
                 target: MapOfCities
                 property: "max_population"
                 value: popMax.text
+            }
+        }
+
+        Text {
+            text: "Hustota zalidnění"
+            font.family: "Helvetica"
+            font.pointSize: 12
+        }
+
+
+        RangeSlider {
+            id: densitySlider
+            Layout.alignment: Qt.AlignHCenter
+            from: 0
+            to: 2700
+            first.value: MapOfCities.min_density
+            second.value: MapOfCities.max_density
+            stepSize: 1.0
+            snapMode: RangeSlider.SnapAlways
+
+            Component.onCompleted: {
+                    densitySlider.setValues(0, 2700)
+            }
+
+        }
+
+        Binding {
+                target: MapOfCities
+                property: "min_density"
+                value: densitySlider.first.value
+        }
+
+        Binding {
+                target: MapOfCities
+                property: "max_density"
+                value: densitySlider.second.value
+        }
+
+        Row {
+            width: parent.width
+            height: childrenRect.height
+
+            Text {
+                text: "Od: "
+                font.family: "Helvetica"
+                font.pointSize: 9
+            }
+
+            TextInput{
+                id: denMin
+                width:100
+                text: MapOfCities.min_density
+                font.family: "Helvetica"
+                font.pointSize: 9
+            }
+
+            Text {
+                text: " do: "
+                font.family: "Helvetica"
+                font.pointSize: 9
+            }
+
+            TextInput{
+                id: denMax
+                text: MapOfCities.max_density
+                font.family: "Helvetica"
+                font.pointSize: 9
+            }
+
+            Binding {
+                target: MapOfCities
+                property: "min_density"
+                value: denMin.text
+            }
+
+            Binding {
+                target: MapOfCities
+                property: "max_density"
+                value: denMax.text
             }
         }
 
@@ -143,7 +223,7 @@ RowLayout {
                     property: "kraj_current"
                     value: comboKraj.currentText
         }
-      
+
         Text {
             width: parent.width
             Layout.alignment: Qt.AlignHCenter
@@ -164,17 +244,30 @@ RowLayout {
                     property: "okres_current"
                     value: comboOkres.currentText
         }
-        
+
+
         Button {
             id: filter
             width: parent.width
             Layout.alignment: Qt.AlignHCenter
 			text: "Filtrovat"
 			onClicked: {MapOfCities.filterData()
-                        cityList.currentIndex = -1 
+                        cityList.currentIndex = -1
                         mapWindow.fitViewportToVisibleMapItems()
-            }                    
-		}
+            }
+        }
+
+        Button {
+            id:btn
+            width: parent.width
+            Layout.alignment: Qt.AlignHCenter
+            text: "Uložit"
+            onClicked: {
+                load.active = !load.active
+                load.active = !load.active
+            }
+        }
+
     }
 
     Plugin {
@@ -186,7 +279,7 @@ RowLayout {
         }
     }
 
-    Map {   
+    Map {
         id: mapWindow
         Layout.fillWidth: true
         Layout.fillHeight: true
@@ -217,19 +310,19 @@ RowLayout {
                         font.bold: {
                                 font.bold = false
                                 if(model.mestoLabel == "město v Česku")
-                                    font.bold = true   
+                                    font.bold = true
                                 }
                     }
                 }
             }
         }
-    }  
+    }
     ListView {
 
         id: cityList
         width: 250
 		Layout.fillHeight: true
-        Layout.alignment: Qt.AlignRight       
+        Layout.alignment: Qt.AlignRight
         currentIndex: -1 //load data with empty current item
         focus: true
 
@@ -241,7 +334,7 @@ RowLayout {
 
                 Row {
                     spacing: 2
-                    
+
                     Column{
                         id: column_txt
                         Text {
