@@ -60,7 +60,7 @@ class Stop:
             self.platform_code = attributes['platform_code']
 
     # Getters
-    def getId(self):
+    def getID(self):
         return self.stop_id
 
     def getCode(self):
