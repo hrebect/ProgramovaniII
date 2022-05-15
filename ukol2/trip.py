@@ -43,5 +43,10 @@ class Trips:
         if 'bikes_allowed' in attributes.keys():
             self.bikes_allowed = attributes['bikes_allowed']
 
-    def getTripID(self):
+    def getID(self):
         return self.trip_id
+
+    def compareRouteID(self, route_id):
+        if route_id == self.route_id:
+            return True
+        return False

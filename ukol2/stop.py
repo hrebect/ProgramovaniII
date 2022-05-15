@@ -95,8 +95,4 @@ class Stop:
 
     # here add more getters if needed
 
-    def print(self):
-        print(self.stop_id,
-              self.stop_code, self.stop_name, self.stop_desc, self.stop_lat, self.stop_lon,
-              self.zone_id, self.stop_url, self.location_type, self.parent_station, self.stop_timezone,
-              self.wheelchair_boarding, self.level_id, self.platform_code)
+
