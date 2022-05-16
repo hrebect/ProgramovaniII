@@ -9,7 +9,7 @@ jízda je pak jednoznačně určena parametrem self.trip_id
 
 soubor routes.py obsahuje třídu Route jednoznačně určenou parametrem self.route_id, třída reprezentuje konkrétní linku MHD
 
-všechny výše zmíněné třídy využívají stejné metody, a to metody loadAttributes(), která z jednoho řádku CSV souboru 
-přiřadí parametrům třídy jednotlivé hodnoty
+všechny výše zmíněné třídy využívají stejné metody, a to metody loadAttributes(), která přiřadí parametrům třídy jednotlivé hodnoty
+z konkrétního řádku CSV souboru 
 
 
