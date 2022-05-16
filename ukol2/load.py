@@ -3,7 +3,7 @@ from stop import *
 from stoptime import *
 from trip import *
 from routes import *
-from stop_segment import *
+from stopsegment import *
 
 # Initialize dictionaries for each class
 stops = {}
