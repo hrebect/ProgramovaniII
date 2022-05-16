@@ -14,9 +14,11 @@ class Stop:
         self.wheelchair_boarding = None
         self.level_id = None
         self.platform_code = None
+        self.asw_node_id = None
+        self.asw_stop_id = None
 
     def loadAttributes(self, attributes: dict):
-        # load stop attributes from given dictionary
+        # Load stop attributes from given dictionary
         if 'stop_id' in attributes.keys():
             self.stop_id = attributes['stop_id']
 
@@ -59,40 +61,15 @@ class Stop:
         if 'platform_code' in attributes.keys():
             self.platform_code = attributes['platform_code']
 
+        if 'asw_node_id' in attributes.keys():
+            self.asw_node_id = attributes['asw_node_id']
+
+        if 'asw_stop_id' in attributes.keys():
+            self.asw_stop_id = attributes['asw_stop_id']
+
     # Getters
     def getID(self):
         return self.stop_id
 
-    def getCode(self):
-        return self.stop_code
-
     def getName(self):
         return self.stop_name
-
-    def getDesc(self):
-        return self.stop_desc
-
-    def getLat(self):
-        return self.stop_lat
-
-    def getLon(self):
-        return self.stop_lon
-
-    def getZoneId(self):
-        return self.zone_id
-
-    def getUrl(self):
-        return self.stop_url
-
-    def getLocationType(self):
-        return self.location_type
-
-    def getParentStation(self):
-        return self.parent_station
-
-    def getTimezone(self):
-        return self.stop_timezone
-
-    # here add more getters if needed
-
-

@@ -1,4 +1,4 @@
-class Trips:
+class Trip:
     def __init__(self):
         self.route_id = None
         self.service_id = None
@@ -10,9 +10,10 @@ class Trips:
         self.shape_id = None
         self.wheelchair_accessible = None
         self.bikes_allowed = None
+        self.exceptional = None
 
     def loadAttributes(self, attributes: dict):
-        # load stop attributes from given dictionary
+        #  Load trip attributes from given dictionary
         if 'route_id' in attributes.keys():
             self.route_id = attributes['route_id']
 
@@ -43,10 +44,11 @@ class Trips:
         if 'bikes_allowed' in attributes.keys():
             self.bikes_allowed = attributes['bikes_allowed']
 
+        if 'exceptional' in attributes.keys():
+            self.exceptional = attributes['exceptional']
+
     def getID(self):
         return self.trip_id
 
-    def compareRouteID(self, route_id):
-        if route_id == self.route_id:
-            return True
-        return False
+    def getRouteID(self):
+        return self.route_id

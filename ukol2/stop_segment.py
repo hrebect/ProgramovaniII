@@ -1,29 +1,29 @@
 from trip import *
 from typing import List
+
+
 class StopSegment:
-    def __init__(self, where_to, where_from):
-        self.where_from = where_to
-        self.where_to = where_from
-        self.trips: List[Trips] = []
-        self.bus_lines: List[str] = []
+    def __init__(self, where_from, where_to):
+        self.where_from: str = where_from
+        self.where_to: str = where_to
+        self.trips: List[Trip] = []
+        self.route_short_names: List[str] = []
 
-    def compare(self, where_from, where_to):
-        if where_from == self.where_from and where_to == self.where_to:
-            return True
-        return False
-
-    def addTrip(self, trip: Trips):
+    def addTrip(self, trip: Trip):
+        # Adds trip to list of trips
         self.trips.append(trip)
 
-    def addBusLine(self, bus_line: str):
-        if bus_line not in self.bus_lines:
-            self.bus_lines.append(bus_line)
+    def addRouteShortName(self, short_name: str):
+        # If short name is not in the list, append short name to the list
+        if short_name not in self.route_short_names:
+            self.route_short_names.append(short_name)
 
+    # Getters
     def getTripCount(self):
         return len(self.trips)
 
-    def getBusLines(self):
-        return self.bus_lines
+    def getRouteShortNames(self):
+        return self.route_short_names
 
     def getWhereFrom(self):
         return self.where_from
