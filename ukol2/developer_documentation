@@ -12,4 +12,8 @@ soubor routes.py obsahuje třídu Route jednoznačně určenou parametrem self.r
 všechny výše zmíněné třídy využívají stejné metody, a to metody loadAttributes(), která přiřadí parametrům třídy jednotlivé hodnoty
 z konkrétního řádku CSV souboru 
 
+soubor stopsegment.py obsahuje třídu StopSegment reprezentující jednotlivý mezizastávkový úsek, metoda __init__ přijímá 2 vstupní parametry,
+a to identifikátory self.stop_id z třídy Stop definující počáteční a koncovou zastávku mezizastávkového úseku, tyto identifikátory
+jsou uloženy do parametrů třídy self.where_from a self.where_to, další 2 parametry jsou seznamy: self.trips je seznam všech jízd linek MHD,
+které přes zastávkový úsek vedou, self.route_short_names je seznam linek MHD, které mají mezizastávkový úsek na své trase 
 
