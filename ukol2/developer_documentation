@@ -1,0 +1,15 @@
+soubor stop.py obsahuje třídu Stop, která reprezentuje danou zastávku, parametr self.stop_id jednoznačně identifikuje zastávku, 
+tj. představuje primární klíč databáze zastávek, dále parametr self.stop_name drží název této zastávky
+
+soubor stoptime.py obsahuje třídu StopTime, jejíž parametr self.trip_id uvádí identifikátor dané jízdy na lince MHD, 
+další parametr self.stop_id ukládá identifikátor zastávky
+
+soubor trip.py obsahuje třídu Trip, která v parametru self.route_id zaznamenává identifikátor linky MHD pro danou jízdu, 
+jízda je pak jednoznačně určena parametrem self.trip_id
+
+soubor routes.py obsahuje třídu Route jednoznačně určenou parametrem self.route_id, třída reprezentuje konkrétní linku MHD
+
+všechny výše zmíněné třídy využívají stejné metody, a to metody loadAttributes(), která z jednoho řádku CSV souboru 
+přiřadí parametrům třídy jednotlivé hodnoty
+
+
