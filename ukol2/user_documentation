@@ -1,0 +1,6 @@
+před spuštěním hlavního python souboru busiest_stop_segment.py je třeba si obstarat vstupní data, to je možné dvěma způsoby:
+1) manuálně stáhnout soubor GTFS a uložit ho do složky s python soubory
+2) spustit soubor download_data.py, který v případě připojení k internetu automaticky stáhne a rozzipuje všechny potřebné soubory pro město Praha
+
+následně stačí jen spustit hlavní python skript, do konzole se za sebou vypíše 5 nejvytíženějších mezizastávkových úseků v tomto formátu:
+název počáteční stanice - název koncové stanice (počet jízd na trasách linek MHD) seznam linek MHD, které vedou mezizastávkovým úsekem
