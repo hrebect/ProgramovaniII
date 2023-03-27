@@ -8,10 +8,10 @@ import QtQuick.Dialogs 1.0
 
 RowLayout {
 
-	implicitWidth: 2000	// width on the start of the program
-	implicitHeight: 2000	// height on the start of the program
+	implicitWidth: 800	// width on the start of the program
+	implicitHeight: 500	// height on the start of the program
 	anchors.fill: parent
-    
+
     // Create property holding model of currently selected city
     property var currentModelItem;
     
@@ -20,6 +20,8 @@ RowLayout {
         Layout.fillHeight: true //full hight
         width: 250
         spacing: 20
+		anchors.fill: parent2
+		Layout.alignment: Qt.AlignHCenter
 
         CheckBox {
             id: boxCities
@@ -78,8 +80,8 @@ RowLayout {
                 value: populationSlider.second.value
         }
 
-        Row {
-            width: parent.width
+        RowLayout {
+			width: parent2.width
             height: childrenRect.height
 
             Text {
@@ -90,17 +92,19 @@ RowLayout {
 
             TextInput{
                 id: popMin
-                width:100
                 text: MapOfCities.min_population
                 font.family: "Helvetica"
                 font.pointSize: 9
             }
+
+
 
             Text {
                 text: " do: "
                 font.family: "Helvetica"
                 font.pointSize: 9
             }
+
 
             TextInput{
                 id: popMax
@@ -157,8 +161,8 @@ RowLayout {
                 value: densitySlider.second.value
         }
 
-        Row {
-            width: parent.width
+        RowLayout {
+            width: parent2.width
             height: childrenRect.height
 
             Text {
@@ -169,11 +173,12 @@ RowLayout {
 
             TextInput{
                 id: denMin
-                width:100
                 text: MapOfCities.min_density
                 font.family: "Helvetica"
                 font.pointSize: 9
             }
+
+
 
             Text {
                 text: " do: "
@@ -202,7 +207,7 @@ RowLayout {
         }
 
         Text {
-            width: parent.width
+            width: parent2.width
             Layout.alignment: Qt.AlignHCenter
             text: "Kraje"
             font.family: "Helvetica"
@@ -211,7 +216,7 @@ RowLayout {
 
         ComboBox {
             id: comboKraj
-            width: parent.width
+            width: parent2.width
             Layout.alignment: Qt.AlignHCenter
             model: MapOfCities.kraje
             onActivated: { MapOfCities.loadOkresy()
@@ -225,7 +230,7 @@ RowLayout {
         }
 
         Text {
-            width: parent.width
+            width: parent2.width
             Layout.alignment: Qt.AlignHCenter
             text: "Okresy"
             font.family: "Helvetica"
@@ -234,7 +239,7 @@ RowLayout {
 
         ComboBox {
             id: comboOkres
-            width: parent.width
+            width: parent2.width
             Layout.alignment: Qt.AlignHCenter
             model: MapOfCities.okresy
         }
@@ -248,7 +253,7 @@ RowLayout {
 
         Button {
             id: filter
-            width: parent.width
+            width: parent2.width
             Layout.alignment: Qt.AlignHCenter
 			text: "Filtrovat"
 			onClicked: {MapOfCities.filterData()
@@ -271,6 +276,7 @@ RowLayout {
         id: mapWindow
         Layout.fillWidth: true
         Layout.fillHeight: true
+
         plugin: mapPlugin
         activeMapType: supportedMapTypes[supportedMapTypes.length-2] // Use our custom tile server
         center: QtPositioning.coordinate(49.74375, 15.338639) //center of Czechia, should be calculated froma actual dataset

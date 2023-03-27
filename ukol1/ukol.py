@@ -63,19 +63,23 @@ class CityMap(QAbstractListModel):
         self._okresy.insert(0, "Vše")
 
     def load_from_json(self, filename):
-        with open(filename, encoding="utf-8") as f:
-            self.city_list_all = json.load(f)  # list of all on future
+        try:
+            with open(filename, encoding="utf-8") as f:
+                self.city_list_all = json.load(f)  # list of all on future
 
-            # Create QGeoCoordinate from the original JSON location
-            for c in self.city_list_all:  # list of all in future
-                pos = c['location']
-                lon, lat = pos.split("(")[1].split(")")[0].split(
-                    " ")  # Get the part between brackets and split it on space
-                c['location'] = QGeoCoordinate(float(lat), float(
-                    lon))  # Create QGeoCoordinate and overwrite original `location` entry
+                # Create QGeoCoordinate from the original JSON location
+                for c in self.city_list_all:  # list of all in future
+                    pos = c['location']
+                    lon, lat = pos.split("(")[1].split(")")[0].split(
+                        " ")  # Get the part between brackets and split it on space
+                    c['location'] = QGeoCoordinate(float(lat), float(
+                        lon))  # Create QGeoCoordinate and overwrite original `location` entry
 
-        # Fill data for first open
-        self.city_list_filtred = self.city_list_all
+            # Fill data for first open
+            self.city_list_filtred = self.city_list_all
+
+        except FileNotFoundError:
+            print('City data does not exist')
 
     def rowCount(self, parent: QtCore.QModelIndex = ...) -> int:
         """ Return number of cities in the list"""
