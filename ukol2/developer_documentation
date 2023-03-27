@@ -1,0 +1,25 @@
+soubor stop.py obsahuje třídu Stop, která reprezentuje danou zastávku, parametr self.stop_id jednoznačně identifikuje zastávku, 
+tj. představuje primární klíč databáze zastávek, dále parametr self.stop_name drží název této zastávky
+
+soubor stoptime.py obsahuje třídu StopTime, jejíž parametr self.trip_id uvádí identifikátor dané jízdy na lince MHD, 
+další parametr self.stop_id ukládá identifikátor zastávky
+
+soubor trip.py obsahuje třídu Trip, která v parametru self.route_id zaznamenává identifikátor linky MHD pro danou jízdu, 
+jízda je pak jednoznačně určena parametrem self.trip_id
+
+soubor routes.py obsahuje třídu Route jednoznačně určenou parametrem self.route_id, třída reprezentuje konkrétní linku MHD
+
+všechny výše zmíněné třídy využívají stejné metody, a to metody loadAttributes(), která přiřadí parametrům třídy jednotlivé hodnoty
+z konkrétního řádku CSV souboru 
+
+soubor stopsegment.py obsahuje třídu StopSegment reprezentující jednotlivý mezizastávkový úsek, metoda __init__ přijímá 2 vstupní parametry,
+a to identifikátory self.stop_id z třídy Stop definující počáteční a koncovou zastávku mezizastávkového úseku, tyto identifikátory
+jsou uloženy do parametrů třídy self.where_from a self.where_to, další 2 parametry jsou seznamy: self.trips je seznam všech jízd linek MHD,
+které přes zastávkový úsek vedou, self.route_short_names je seznam linek MHD, které mají mezizastávkový úsek na své trase; metody třídy
+buď fungují na principu getterů, případně přidávají prvky do seznamů
+
+hlavní soubor busiest_stop_segment.py, přes který se spouští program, nejdříve inicializuje slovníky, jež přestavují hlavní datový typ python
+souboru, každý slovník reprezentuje jednu třídu, prvky slovníku jsou pak jednotlivé objekty dané třídy; následně je s využitím těchto slovníků
+naplněn slovník stop_segments, který obsahuje objekty typu StopSegment, na konec je vybráno 5 těchto objektů s nejvyšším počtem položek
+v atributu self.trips, do konzole jsou poté vypsány výsledky
+
